@@ -31,6 +31,7 @@ const MyOrders = () => {
         <Loader />
       ) : (
         <>
+        
           <section className="flex flex-col items-center text-dark z-10 min-h-[calc(100vh-340px)] w-full bg-lightGray/5">
             <div className="w-full h-full md:p-4 md:container flex justify-center">
               <div className="w-full lg:w-[65%] my-6 mb-10">

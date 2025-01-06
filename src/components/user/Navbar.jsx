@@ -100,6 +100,16 @@ const Navbar = () => {
                 {t("Dish of the Day")}
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/trackOrders"
+                className={({ isActive }) =>
+                  isActive ? "text-primary" : "text-dark"
+                }
+              >
+                {t("Track Your Orders")}
+              </NavLink>
+            </li>
             {/* <li>
               <NavLink
                 to="/offers"
