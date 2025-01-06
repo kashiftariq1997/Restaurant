@@ -23,8 +23,8 @@ const [formValues, setFormValues] = useState({
   type: "",
   isFeatured: false, // Set default to false (boolean)
   status: "",
-  sizes: [], // This can stay as an array of strings
-  extras: [],
+  sizes:[] , // This can stay as an array of strings
+  extras:[] ,
   caution: "",
   description: "", // Fix typo from "discription" to "description"
 });
@@ -92,7 +92,7 @@ const [formValues, setFormValues] = useState({
     console.log(formData);
     console.log(formData.sizes); // Logs sizes array
     console.log(formData.extras); // Logs extras array
-    console.log(JSON.stringify(formData));
+    console.log(JSON.stringify(formData.sizes));
     // Dispatch the addProduct action with the form data
     dispatch(addProduct(formData));
   

@@ -28,6 +28,8 @@ import DeliveryBoys from "./pages/Admin/DeliveryBoys";
 import Customers from "./pages/Admin/Customers";
 import Employees from "./pages/Admin/Employees";
 import ItemDetail from "./pages/Admin/ItemDetail";
+import OrderStatus from "./pages/User/OrderStatus";
+import OrderTrack from "./pages/User/OrderTrack";
 
 function App() {
   const role = "admin"; // This should ideally be fetched from your authentication logic
@@ -65,6 +67,8 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/my-orders" element={<MyOrders />} />
           <Route path="/my-orders/:id" element={<OrderInfo />} />
+          <Route path="/order-status" element={<OrderStatus />} />
+          <Route path="/trackOrders" element={<OrderTrack />} />
         </Route>
 
         {/* Admin Routes */}
