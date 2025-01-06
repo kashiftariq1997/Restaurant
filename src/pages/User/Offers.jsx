@@ -1,5 +1,5 @@
 import { Clock, ChefHat, Award } from "lucide-react";
-import DishOfTheDay from "../../assets/images/dishoftheday.png";
+// import DishOfTheDay from "../../assets/images/dishoftheday.png";
 
 const Offers = () => {
   return (
@@ -8,8 +8,8 @@ const Offers = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden shadow-xl">
             <div className="relative h-[400px]">
-              <img
-                src={DishOfTheDay}
+            <img
+                src='../../assets/images/dishoftheday.png'
                 alt="Thiéboudienne Royal"
                 className="w-full h-full object-cover"
               />
