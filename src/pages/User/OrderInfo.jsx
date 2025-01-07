@@ -140,50 +140,6 @@ const OrderInfo = () => {
                     </div>
                     <div className="bg-white rounded-xl p-4 w-full h-fit shadow-sm flex flex-col gap-2">
                       <h3 className="text-sm font-semibold">Payment Info</h3>
-                      <div style={{ textAlign: "center" }}>
-      <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-        <circle
-          cx="100"
-          cy="100"
-          r="20"
-          fill="none" // Keep the inside empty
-          stroke={circleColor >= 1 ? "blue" : "black"} // Update stroke color
-          strokeWidth="8"
-        />
-        <circle
-          cx="100"
-          cy="100"
-          r="40"
-          fill="none"
-          stroke={circleColor >= 2 ? "blue" : "black"}
-          strokeWidth="8"
-        />
-        <circle
-          cx="100"
-          cy="100"
-          r="60"
-          fill="none"
-          stroke={circleColor >= 3 ? "blue" : "black"}
-          strokeWidth="8"
-        />
-        <circle
-          cx="100"
-          cy="100"
-          r="80"
-          fill="none"
-          stroke={circleColor >= 4 ? "blue" : "black"}
-          strokeWidth="8"
-        />
-      </svg>
-
-      <div style={{ marginTop: "20px" }}>
-        <button onClick={() => handleStateChange(0)}>Reset</button>
-        <button onClick={() => handleStateChange(1)}>Color 1 Border</button>
-        <button onClick={() => handleStateChange(2)}>Color 2 Borders</button>
-        <button onClick={() => handleStateChange(3)}>Color 3 Borders</button>
-        <button onClick={() => handleStateChange(4)}>Color 4 Borders</button>
-      </div>
-    </div>
                       <p className="flex items-center gap-2 text-lightGray text-sm mr-auto">
                         Method:{" "}
                         <span className="text-dark">Cash On Delivery</span>

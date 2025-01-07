@@ -142,7 +142,7 @@ const Navbar = () => {
               )}
             </div> */}
             {/* language  */}
-            <button
+            {/* <button
               className="relative hidden lg:flex items-center gap-2 border border-lightGray/20 rounded-full px-3 py-[7px]"
               onClick={() => setLanguageDropdown((prev) => !prev)}
             >
@@ -153,9 +153,9 @@ const Navbar = () => {
                   alt="icon"
                 />
               </div>
-              <h4 className="text-sm font-medium">{language.name}</h4>
+              <h4 className="text-sm font-medium">{language.name}</h4> */}
               {/* language drop down  */}
-              {languageDropdown && (
+              {/* {languageDropdown && (
                 <ul className="hidden lg:block absolute top-14 right-0 bg-white p-2 rounded-lg w-[180px] z-50 shadow-md">
                   {languages.map((item, index) => (
                     <li
@@ -175,7 +175,7 @@ const Navbar = () => {
                   ))}
                 </ul>
               )}
-            </button>
+            </button> */}
             {/* cart */}
             <button
               className="hidden lg:flex items-center gap-2 text-white bg-dark rounded-full px-3 py-[7px]"

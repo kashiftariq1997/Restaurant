@@ -88,13 +88,8 @@ const [formValues, setFormValues] = useState({
       extras: Array.isArray(formValues.extras) ? formValues.extras : [], // Ensure extras is an array
     };
   
-    // Log form data to check
-    console.log(formData);
-    console.log(formData.sizes); // Logs sizes array
-    console.log(formData.extras); // Logs extras array
-    console.log(JSON.stringify(formData.sizes));
     // Dispatch the addProduct action with the form data
-    dispatch(addProduct(formData));
+  dispatch(addProduct(formData));
   
     // Show success toast and close modal
     showToast("Item added successfully!");

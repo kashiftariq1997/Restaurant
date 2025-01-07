@@ -46,39 +46,50 @@ const OrderStatus = () => {
 
       {/* SVG for order status circles */}
       <div className="flex justify-center items-center mb-8">
-        <svg width="600" height="600" xmlns="http://www.w3.org/2000/svg">
+        <svg width="500" height="500" xmlns="http://www.w3.org/2000/svg">
           <circle
-            cx="300"
-            cy="300"
+            cx="250"
+            cy="250"
             r="100"
             fill="none"
             stroke={getCircleColor(OrderStatusEnum.APPROVED)} // Circle 1 (APPROVED)
             strokeWidth="8"
           />
           <circle
-            cx="300"
-            cy="300"
+            cx="250"
+            cy="250"
             r="125"
             fill="none"
             stroke={getCircleColor(OrderStatusEnum.PREPARING)} // Circle 2 (PREPARING)
             strokeWidth="8"
           />
           <circle
-            cx="300"
-            cy="300"
+            cx="250"
+            cy="250"
             r="150"
             fill="none"
             stroke={getCircleColor(OrderStatusEnum.DELIVERING)} // Circle 3 (DELIVERING)
             strokeWidth="8"
           />
           <circle
-            cx="300"
-            cy="300"
+            cx="250"
+            cy="250"
             r="175"
             fill="none"
             stroke={getCircleColor(OrderStatusEnum.DELIVERED)} // Circle 4 (DELIVERED)
             strokeWidth="8"
           />
+          <text
+  x="250"
+  y="250"
+  textAnchor="middle"
+  dominantBaseline="middle"
+  fill="black"
+  fontSize="24"
+  fontWeight="bold"
+>
+  {Object.keys(OrderStatusEnum)[status]}
+</text>
         </svg>
       </div>
 
