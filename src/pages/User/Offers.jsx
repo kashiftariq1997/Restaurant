@@ -1,8 +1,8 @@
 import { Clock, ChefHat, Award } from "lucide-react";
 import { useState } from "react";
-import dishOfTheDay1 from "../../assets/images/dishoftheday1.jpg";
-import dishOfTheDay2 from "../../assets/images/dishoftheday2.jpg";
-import dishOfTheDay3 from "../../assets/images/dishoftheday3.avif";
+import dishOfTheDay1 from "../../assets/images/dishoftheday1.jpeg";
+import dishOfTheDay2 from "../../assets/images/dishoftheday2.jpeg";
+import dishOfTheDay3 from "../../assets/images/dishoftheday3.jpeg";
 
 // Dummy Data for Dishes
 const dishes = [
