@@ -17,6 +17,7 @@ const Home = () => {
   const { products, status, error } = useSelector((state) => state.products);
   const { accessToken } = useSelector((state) => state.users);
 
+  const order=false;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const Home = () => {
   return (
     <>
       <section className="flex flex-col items-center text-dark z-10 min-h-[100vh] w-full">
-        {accessToken && <Header />}
+        {order && <Header />}
         {/* Home Page  */}
         <div className="w-full p-4 md:container">
           {/* Hero section  */}

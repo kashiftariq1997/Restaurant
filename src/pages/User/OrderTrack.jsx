@@ -11,7 +11,7 @@ const OrderTracking = () => {
       toast.error("Veuillez entrer votre numéro de téléphone");
       return;
     }
-    navigate(`/track/status?phone=${encodeURIComponent(phone)}`);
+    navigate("/order-status");
   };
 
   return (

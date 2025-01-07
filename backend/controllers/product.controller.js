@@ -38,6 +38,17 @@ const upload = multer({
 
 // Add new product
 export const addProduct = async (req, res) => {
+  let { extras, sizes } = req.body || {};
+
+  // Parse extras and sizes if they are stringified
+  if (typeof extras === "string") {
+    extras = JSON.parse(extras); // Parse the extras array if it's a string
+  }
+
+  if (typeof sizes === "string") {
+    sizes = JSON.parse(sizes); // Parse the sizes array if it's a string
+  }
+
   // Handle image upload via multer
   upload(req, res, async (err) => {
     if (err) {
@@ -47,9 +58,12 @@ export const addProduct = async (req, res) => {
     try {
       const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
+      // Save the product data including parsed sizes and extras
       const newProduct = new Product({
         ...req.body,
         image: imageUrl, // Save image URL to the product model
+        extras, // Save extras if it is parsed
+        sizes, // Save sizes if it is parsed
       });
 
       const savedProduct = await newProduct.save();

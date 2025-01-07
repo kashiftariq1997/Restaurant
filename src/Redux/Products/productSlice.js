@@ -18,15 +18,32 @@ export const fetchAllProducts = createAsyncThunk(
 export const addProduct = createAsyncThunk(
   "products/add",
   async (product, { rejectWithValue }) => {
+    console.log("::::::::::::::", product);
+
+    const data = {
+      ...product,
+      ...(product.sizes && product.sizes.length > 0 && { sizes: product.sizes }), // Only add sizes if it's a non-empty array
+      ...(product.extras && product.extras.length > 0 && { extras: product.extras }), // Only add extras if it's a non-empty array
+    };
+
+    console.log(data); // Log to verify that sizes and extras are excluded if empty
+
     try {
       const formData = new FormData();
-      Object.entries(product).forEach(([key, value]) => {
+      Object.entries(data).forEach(([key, value]) => {
         if (key === "image" && value instanceof File) {
-          formData.append(key, value); // Add file object
-        } else {
+          formData.append(key, value); // Add image file
+        } else if ((key === "sizes" || key === "extras") && Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value)); // Stringify arrays
+        } else if (value !== undefined && value !== null) {
           formData.append(key, value); // Add other fields
         }
       });
+
+      console.log("form data: ", formData);
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
 
       const response = await axios.post(`${PRODUCT_API}/products/add`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
