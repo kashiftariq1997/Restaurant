@@ -82,6 +82,8 @@ export const logoutUser = createAsyncThunk(
       // Clear user and token data from sessionStorage
       sessionStorage.removeItem("token");
       sessionStorage.removeItem("user");
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
 
       return; // Return nothing as the state is cleared on the client side
     } catch (error) {

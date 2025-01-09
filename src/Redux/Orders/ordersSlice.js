@@ -16,6 +16,18 @@ export const fetchAllOrders = createAsyncThunk(
   }
 );
 
+export const fetchOrdersByPhone = createAsyncThunk(
+  "orders/fetchByPhone",
+  async (phone, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${ORDER_API}/orders/get/phone/${phone}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Error fetching orders by phone");
+    }
+  }
+);
+
 export const addOrder = createAsyncThunk(
   "orders/add",
   async (order, { rejectWithValue }) => {

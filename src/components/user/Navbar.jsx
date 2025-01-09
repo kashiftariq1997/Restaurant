@@ -190,80 +190,78 @@ const Navbar = () => {
             </button>
             {/* account  */}
             {accessToken ? (
-              <button
-                className="relative hidden lg:flex items-center gap-2 text-white bg-secondary rounded-full px-3 py-[7px]"
-                onClick={() => setAccountDropdown((prev) => !prev)}
-              >
-                {/* <div className="h-4 w-4"> */}
-                <PiUserCircleFill />
-                {/* </div> */}
-                <h4 className="text-sm font-medium">Account</h4>
-                <IoIosArrowDown />
-                {accountDropdown && (
-                  <ul className="hidden lg:block absolute top-14 right-0 bg-white p-3 rounded-xl w-[320px] shadow-md text-dark">
-                    {/* profile  */}
-                    <div className="flex gap-3 mb-6">
-                      <div className="h-[68px] w-[68px] overflow-hidden rounded-full border border-dashed border-primary p-[2px]">
-                        <img
-                          className="h-full w-full object-cover rounded-full"
-                          src={dp}
-                          alt="Image"
-                        />
-                      </div>
-                      <div className="flex flex-col justify-between text-start">
-                        <h2 className="text-sm font-medium">
-                          Mohamed Masseye DIOP
-                        </h2>
-                        <p className="text-xs text-lightGray">
-                          admin@turquoise.sn
-                        </p>
-                        <h2 className="text-sm font-medium">OXOF</h2>
-                      </div>
-                    </div>
-                    <ul className="text-sm items-start text-start px-2">
-                      <li className="flex items-center gap-3 py-3 border-b border-lightGray/20 hover:text-primary transition-none">
-                        <TbLayoutDashboard className="text-lg text-lightGray/80" />{" "}
-                        <Link to="/admin/dashboard">Dashboard</Link>
-                      </li>
-                      <li className="flex items-center gap-3 py-3 border-b border-lightGray/20 hover:text-primary transition-none">
-                        <LiaConciergeBellSolid className="text-lg text-lightGray/80" />{" "}
-                        <a href="">My Orders</a>
-                      </li>
-                      <li className="flex items-center gap-3 py-3 border-b border-lightGray/20 hover:text-primary transition-none">
-                        <FiEdit className="text-lg text-lightGray/80" />{" "}
-                        <a href="">Edit Profile</a>
-                      </li>
-                      <li className="flex items-center gap-3 py-3 border-b border-lightGray/20 hover:text-primary transition-none">
-                        <TbBrandWechat className="text-lg text-lightGray/80" />{" "}
-                        <a href="">Chat</a>
-                      </li>
-                      <li className="flex items-center gap-3 py-3 border-b border-lightGray/20 hover:text-primary transition-none">
-                        <PiAddressBookTabsLight className="text-lg text-lightGray/80" />{" "}
-                        <a href="">Address</a>
-                      </li>
-                      <li className="flex items-center gap-3 py-3 border-b border-lightGray/20 hover:text-primary transition-none">
-                        <PiKey className="text-lg text-lightGray/80" />{" "}
-                        <a href="">Change Password</a>
-                      </li>
-                      <li onClick={handleLogout} className="flex items-center gap-3 pt-2 hover:text-primary transition-none">
-                        <CiLogout className="text-lg text-lightGray/80" />{" "}
-                        <a href="">Logout</a>
-                      </li>
-                    </ul>
-                  </ul>
-                )}
-              </button>
-            ) : (
-              <Link
-                to="/login"
-                className="hidden lg:flex items-center gap-2 text-white bg-secondary rounded-full px-3 py-[7px]"
-              >
-                <div className="h-4 w-4">
-                  <CiLogin />
-                </div>
-                <h4 className="text-sm font-medium">Login</h4>
-              </Link>
-            )}
+  <button
+    className="relative hidden lg:flex items-center gap-2 text-white bg-secondary rounded-full px-3 py-[7px]"
+    onClick={() => setAccountDropdown((prev) => !prev)}
+  >
+    <PiUserCircleFill />
+    <h4 className="text-sm font-medium">Account</h4>
+    <IoIosArrowDown />
+    {accountDropdown && (
+      <ul className="hidden lg:block absolute top-14 right-0 bg-white p-3 rounded-xl w-[320px] shadow-md text-dark">
+        {/* profile */}
+        <div className="flex gap-3 mb-6">
+          <div className="h-[68px] w-[68px] overflow-hidden rounded-full border border-dashed border-primary p-[2px]">
+            {/* Use profile image dynamically */}
+            <img
+              className="h-full w-full object-cover rounded-full"
+              src={profile?.image || dp} // Fallback to dp if no image is available
+              alt="Profile"
+            />
+          </div>
+          <div className="flex flex-col justify-between text-start">
+            <h2 className="text-sm font-medium">{profile?.name || 'User Name'}</h2> {/* Use profile name */}
+            <p className="text-xs text-lightGray">{profile?.email || 'user@example.com'}</p> {/* Use profile email */}
+            <h2 className="text-sm font-medium">{profile?.balance || 'OXOF'}</h2> {/* Use profile balance */}
+          </div>
+        </div>
+        <ul className="text-sm items-start text-start px-2">
+          <li className="flex items-center gap-3 py-3 border-b border-lightGray/20 hover:text-primary transition-none">
+            <TbLayoutDashboard className="text-lg text-lightGray/80" />{" "}
+            <Link to="/admin/dashboard">Dashboard</Link>
+          </li>
+          <li className="flex items-center gap-3 py-3 border-b border-lightGray/20 hover:text-primary transition-none">
+            <LiaConciergeBellSolid className="text-lg text-lightGray/80" />{" "}
+            <a href="#">My Orders</a>
+          </li>
+          <li className="flex items-center gap-3 py-3 border-b border-lightGray/20 hover:text-primary transition-none">
+            <FiEdit className="text-lg text-lightGray/80" />{" "}
+            <a href="#">Edit Profile</a>
+          </li>
+          <li className="flex items-center gap-3 py-3 border-b border-lightGray/20 hover:text-primary transition-none">
+            <TbBrandWechat className="text-lg text-lightGray/80" />{" "}
+            <a href="#">Chat</a>
+          </li>
+          <li className="flex items-center gap-3 py-3 border-b border-lightGray/20 hover:text-primary transition-none">
+            <PiAddressBookTabsLight className="text-lg text-lightGray/80" />{" "}
+            <a href="#">Address</a>
+          </li>
+          <li className="flex items-center gap-3 py-3 border-b border-lightGray/20 hover:text-primary transition-none">
+            <PiKey className="text-lg text-lightGray/80" />{" "}
+            <a href="#">Change Password</a>
+          </li>
+          <li
+            onClick={handleLogout}
+            className="flex items-center gap-3 pt-2 hover:text-primary transition-none"
+          >
+            <CiLogout className="text-lg text-lightGray/80" />{" "}
+            <a href="#">Logout</a>
+          </li>
+        </ul>
+      </ul>
+    )}
+  </button>
+) : (
+  <Link
+    to="/login"
+    className="hidden lg:flex items-center gap-2 text-white bg-secondary rounded-full px-3 py-[7px]"
+  >
+    <div className="h-4 w-4">
+      <CiLogin />
+    </div>
+    <h4 className="text-sm font-medium">Login</h4>
+  </Link>
+)}
           </div>
         </div>
       </nav>

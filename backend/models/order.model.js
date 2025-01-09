@@ -32,7 +32,7 @@ const itemsSchema = new mongoose.Schema({
 
 const orderSchema = new mongoose.Schema(
   {
-    phone: { type: String, trim: true },
+    phone: { type: String, required: true, trim: true },
     address: { type: String, trim: true, trim: true },
     addressType: { type: String, trim: true },
     date: { type: String, trim: true },

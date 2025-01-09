@@ -5,13 +5,15 @@ import {
   getAllOrders,
   getOrderById,
   updateOrder,
+  getOrdersByPhone,
 } from "../controllers/order.controller.js";
 
 const router = express.Router();
 
 router.post("/add", addOrder);
 router.get("/get", getAllOrders);
-router.get("/get/:id", getOrderById);
+router.get("/get/id/:id", getOrderById);
+router.get("/get/phone/:phone", getOrdersByPhone);
 router.put("/update/:id", updateOrder);
 router.delete("/delete/:id", deleteOrder);
 
