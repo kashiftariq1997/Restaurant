@@ -52,6 +52,27 @@ export const getOrderById = async (req, res) => {
   }
 };
 
+export const getOrdersByPhone = async (req, res) => {
+  const { phone } = req.params;
+  try {
+    const orders = await Order.find({ phone });
+    if (!orders.length) {
+      return res.status(404).json({
+        message: "No orders found for this phone number",
+      });
+    }
+    res.status(200).json({
+      message: "Orders fetched successfully",
+      data: orders,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch orders",
+      error: error.message,
+    });
+  }
+};
+
 export const updateOrder = async (req, res) => {
   const { id } = req.params;
   try {

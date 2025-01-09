@@ -1,47 +1,50 @@
-import React, { useState } from "react";
+import React from "react";
+import { useLocation } from "react-router-dom";
 
 // Enum for Order Status
 const OrderStatusEnum = {
-  IN_PROGRESS: 0,
+  PENDING: 0,
   APPROVED: 1,
   PREPARING: 2,
   DELIVERING: 3,
   DELIVERED: 4,
 };
 
-const OrderStatus = () => {
-  // Initialize state with a default value
-  const [status, setStatus] = useState(OrderStatusEnum.DELIVERED); // Change this value manually for testing
+// Mapping order status string to enum value
+const statusStringToEnum = {
+  "Pending": OrderStatusEnum.PENDING,
+  "Approved": OrderStatusEnum.APPROVED,
+  "Preparing": OrderStatusEnum.PREPARING,
+  "Delivering": OrderStatusEnum.DELIVERING,
+  "Delivered": OrderStatusEnum.DELIVERED,
+};
 
-  // Function to handle status change
-  const handleStatusChange = (event) => {
-    setStatus(parseInt(event.target.value)); // Convert dropdown value to integer and update status
-  };
+const OrderStatus = () => {
+  // Get order passed from the previous page
+  const location = useLocation();
+  const { order } = location.state || {}; // Safely retrieve the order object
+
+  // Initialize status based on order status (map string to enum value)
+  const status = order && order.status !== undefined
+    ? statusStringToEnum[order.status] || OrderStatusEnum.PENDING // Default to PENDING if mapping fails
+    : OrderStatusEnum.PENDING; // Default status if no order status is available
 
   // Function to determine the circle color based on the status
   const getCircleColor = (level) => {
     return status >= level ? "blue" : "gray";
   };
 
+  console.log(status);  // Log to verify status is set correctly
+  console.log(order ? order.status : "No status");
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-pink-200">
       <h1 className="text-3xl font-bold text-black mb-8">Order Status</h1>
 
-      {/* Dropdown to select the order status */}
-      <div className="mb-8">
-        <label htmlFor="statusDropdown" className="mr-4 text-black font-semibold">Select Order Status:</label>
-        <select
-          id="statusDropdown"
-          value={status}
-          onChange={handleStatusChange}
-          className="p-2 border rounded-md bg-white"
-        >
-          {Object.entries(OrderStatusEnum).map(([key, value]) => (
-            <option key={value} value={value}>
-              {key.replace("_", " ")}
-            </option>
-          ))}
-        </select>
+      {/* Display order details */}
+      <div className="mb-8 text-center">
+        <p className="text-lg font-semibold">Order ID: {order ? order._id : "Unknown"}</p>
+        <p className="text-md">Phone Number: {order ? order.phone : "Unknown"}</p>
       </div>
 
       {/* SVG for order status circles */}
@@ -80,22 +83,22 @@ const OrderStatus = () => {
             strokeWidth="8"
           />
           <text
-  x="250"
-  y="250"
-  textAnchor="middle"
-  dominantBaseline="middle"
-  fill="black"
-  fontSize="24"
-  fontWeight="bold"
->
-  {Object.keys(OrderStatusEnum)[status]}
-</text>
+            x="250"
+            y="250"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill="black"
+            fontSize="24"
+            fontWeight="bold"
+          >
+            {Object.keys(OrderStatusEnum).find(key => OrderStatusEnum[key] === status)}
+          </text>
         </svg>
       </div>
 
       {/* Displaying the current status */}
       <h2 className="text-xl font-semibold text-black">
-        Current Status: {Object.keys(OrderStatusEnum)[status]}
+        Current Status: {Object.keys(OrderStatusEnum).find(key => OrderStatusEnum[key] === status)}
       </h2>
     </div>
   );
