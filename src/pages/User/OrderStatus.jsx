@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 
 // Enum for Order Status
-const OrderStatusEnum = {
+export const OrderStatusEnum = {
   PENDING: 0,
   APPROVED: 1,
   PREPARING: 2,
@@ -11,7 +11,7 @@ const OrderStatusEnum = {
 };
 
 // Mapping order status string to enum value
-const statusStringToEnum = {
+export const statusStringToEnum = {
   "Pending": OrderStatusEnum.PENDING,
   "Approved": OrderStatusEnum.APPROVED,
   "Preparing": OrderStatusEnum.PREPARING,
@@ -33,9 +33,6 @@ const OrderStatus = () => {
   const getCircleColor = (level) => {
     return status >= level ? "blue" : "gray";
   };
-
-  console.log(status);  // Log to verify status is set correctly
-  console.log(order ? order.status : "No status");
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-pink-200">

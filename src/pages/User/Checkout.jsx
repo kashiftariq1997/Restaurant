@@ -76,8 +76,10 @@ const Checkout = () => {
 
   const onSubmit = async () => {
     const res = await dispatch(registerUser({ name, phone }));
-    if (res.payload === "User already exists!")
+    if (res.payload === "User already exists!") {
+      debugger
       dispatch(loginUser({ name, phone }));
+    }
     const newOrder = createOrder();
     const order = await dispatch(addOrder(newOrder));
     dispatch(clearCart());
