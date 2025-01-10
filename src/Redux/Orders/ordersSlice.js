@@ -40,16 +40,45 @@ export const addOrder = createAsyncThunk(
   }
 );
 
+// export const updateOrderStatus = createAsyncThunk(
+//   "orders/updateStatus",
+//   async (data, { rejectWithValue, getState }) => {
+//     console.log("==============", data);
+//     try {
+//       // Send PATCH request for status update
+//       const response = await axios.patch(`${ORDER_API}/orders/update/status/${data.id}`, {
+//         status: data.status // Correctly pass the status in the request body
+//       });
+//       console.log(response.status); // Logs the status code
+
+//       if (response.status === 200) {
+//         const state = getState(); // Access the Redux state
+//         console.log("Updated order:", response.data.data._id); // Log the updated order data
+//         console.log("Current orders in state:", state.orders.orders); // Access and log the orders array
+//         const specificOrder = state.orders.orders.find(
+//           (order) => order._id === response.data.data._id
+//         );
+        
+//         console.log("Specific Order:", specificOrder);
+//       }
+
+//       return response.data; // Returns the updated order
+//     } catch (error) {
+//       return rejectWithValue(error.response.data || "Error updating order status");
+//     }
+//   }
+// );
+
 export const updateOrderStatus = createAsyncThunk(
   "orders/updateStatus",
-  async ({ _id, status }, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${ORDER_API}/orders/update/${_id}`, {
-        status,
+      const response = await axios.patch(`${ORDER_API}/orders/update/status/${data.id}`, {
+        status: data.status
       });
-      return response.data;
+      return response.data.data; // Return only the updated order
     } catch (error) {
-      return rejectWithValue(error.response.data || "Error updating order");
+      return rejectWithValue(error.response?.data || "Error updating order status");
     }
   }
 );
@@ -83,11 +112,23 @@ const ordersSlice = createSlice({
   extraReducers: (builder) => {
     // Fetch all orders
     builder
+      // .addCase(updateOrderStatus.fulfilled, (state, action) => {
+      //   const updatedOrder = action.payload.data; // Assuming the updated order is in response.data.data
+    
+      //   // Find the index of the specific order
+      //   const index = state.orders.findIndex((order) => order._id === updatedOrder._id);
+    
+      //   if (index !== -1) {
+      //     // Update the specific order in the state
+      //     state.orders[index] = updatedOrder;
+      //   } else {
+      //     console.error("Order not found in state");
+      //   }
+      // });
       .addCase(fetchAllOrders.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchAllOrders.fulfilled, (state, action) => {
-        // console.log("ordersSlice: ", action.payload);
         state.status = "succeeded";
         state.orders = action.payload.data;
       })
@@ -99,7 +140,6 @@ const ordersSlice = createSlice({
     // Add order
     builder
       .addCase(addOrder.fulfilled, (state, action) => {
-        // console.log("orderSlice: ", action.payload.data);
         if (Array.isArray(state.orders)) {
           state.orders = [action.payload.data, ...state.orders];
         }
@@ -109,14 +149,17 @@ const ordersSlice = createSlice({
         state.error = action.payload.data;
       });
 
-    // Update order status
+    // Update order status (PATCH)
     builder
       .addCase(updateOrderStatus.fulfilled, (state, action) => {
-        const index = state.orders.findIndex(
-          (order) => order._id === action.payload._id
-        );
+        const updatedOrder = action.payload; // Assuming the updated order is in response.data.data
+        // Find the index of the specific order
+        const index = state.orders.findIndex((order) => order._id === updatedOrder._id);
+    
         if (index !== -1) {
-          state.orders[index] = action.payload;
+          // Update the specific order in the state
+          state.orders[index] = updatedOrder;
+        } else {
         }
       })
       .addCase(updateOrderStatus.rejected, (state, action) => {

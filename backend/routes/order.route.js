@@ -6,6 +6,7 @@ import {
   getOrderById,
   updateOrder,
   getOrdersByPhone,
+  updateOrderStatus,
 } from "../controllers/order.controller.js";
 
 const router = express.Router();
@@ -15,6 +16,7 @@ router.get("/get", getAllOrders);
 router.get("/get/id/:id", getOrderById);
 router.get("/get/phone/:phone", getOrdersByPhone);
 router.put("/update/:id", updateOrder);
+router.patch("/update/status/:id", updateOrderStatus);
 router.delete("/delete/:id", deleteOrder);
 
 router.use("*", (req, res) => {

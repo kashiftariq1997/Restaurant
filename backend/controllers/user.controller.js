@@ -45,16 +45,23 @@ export const signup = async (req, res) => {
 
 export const signin = async (req, res) => {
   const { email, phone, password } = req.body;
-
+  console.log("emailemailemailemailemailemail", email, phone, password)
   if (!email && !phone) {
     return res.status(400).json({ message: "Email or phone is required!" });
   }
 
   try {
-    const user = await User.findOne({
-      $or: [{ email }, { phone }],
-    });
+    const query = {};
+    if (email) query.email = email;
+    if (phone) query.phone = phone;
 
+    const user = await User.findOne({
+      $or: [query],
+    });
+    // const user = await User.findOne({
+    //   $or: [{ email }, { phone }],
+    // });
+    console.log("useruseruseruseruseruseruser", user)
     if (!user) {
       return res.status(404).json({ message: "User not found!" });
     }

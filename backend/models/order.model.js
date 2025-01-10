@@ -32,6 +32,7 @@ const itemsSchema = new mongoose.Schema({
 
 const orderSchema = new mongoose.Schema(
   {
+    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     phone: { type: String, required: true, trim: true },
     address: { type: String, trim: true, trim: true },
     addressType: { type: String, trim: true },
