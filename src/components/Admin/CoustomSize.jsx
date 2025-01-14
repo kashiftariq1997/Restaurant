@@ -1,53 +1,55 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
 
-const CustomSize = ({ register, setSizes: updateSizes, sizes: initialSizes }) => {
-  // Extract the size property from initialSizes (array of objects)
+const CustomSize = ({ initialSizes, updateSizes }) => {
+  // Local state for sizes
   const [sizes, setSizes] = useState(
-    initialSizes.map((item) => item.size) || ["Small", "Medium", "Large"]
+    initialSizes.length > 0 ? initialSizes : [{ size: "", price: "" }]
   );
 
-  // Helper function to compare arrays
-  const areArraysEqual = (arr1, arr2) => {
-    if (arr1.length !== arr2.length) return false;
-    return arr1.every((val, index) => val === arr2[index]);
-  };
-
-  useEffect(() => {
-    if (!areArraysEqual(sizes, initialSizes.map((item) => item.size))) {
-      updateSizes(
-        "sizes",
-        sizes.map((size) => ({ size })) // Update to match original structure
-      );
-    }
-  }, [sizes, initialSizes, updateSizes]);
-
+  // Add a new size entry
   const handleAddSize = () => {
-    setSizes([...sizes, "New Size"]);
+    setSizes((prevSizes) => [...prevSizes, { size: "", price: "" }]);
   };
 
+  // Remove a size entry
   const handleRemoveSize = (index) => {
-    setSizes(sizes.filter((_, i) => i !== index));
+    const updatedSizes = sizes.filter((_, i) => i !== index);
+    setSizes(updatedSizes);
+    updateSizes(updatedSizes); // Update parent state
   };
 
-  const handleSizeChange = (index, newValue) => {
+  // Handle changes to size or price
+  const handleChange = (index, field, value) => {
     const updatedSizes = [...sizes];
-    updatedSizes[index] = newValue;
+    updatedSizes[index][field] = field === "price" ? parseFloat(value) || "" : value;
     setSizes(updatedSizes);
+    updateSizes(updatedSizes); // Update parent state
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       <label className="text-xs text-lightGray">SIZES</label>
       <div className="flex flex-col gap-2">
-        {sizes.map((size, index) => (
+        {sizes.map((item, index) => (
           <div key={index} className="flex items-center gap-2">
+            {/* Size Input */}
             <input
               type="text"
-              value={size}
-              onChange={(e) => handleSizeChange(index, e.target.value)}
+              value={item.size}
+              onChange={(e) => handleChange(index, "size", e.target.value)}
+              placeholder="Enter size (e.g., Small, Medium)"
               className="border border-lightGray/20 p-2 rounded-md text-sm text-lightGray w-full"
             />
+            {/* Price Input */}
+            <input
+              type="number"
+              value={item.price}
+              onChange={(e) => handleChange(index, "price", e.target.value)}
+              placeholder="Enter price"
+              className="border border-lightGray/20 p-2 rounded-md text-sm text-lightGray w-full"
+            />
+            {/* Remove Button */}
             <button
               type="button"
               onClick={() => handleRemoveSize(index)}
@@ -57,12 +59,13 @@ const CustomSize = ({ register, setSizes: updateSizes, sizes: initialSizes }) =>
             </button>
           </div>
         ))}
+        {/* Add Size Button */}
         <button
           type="button"
           onClick={handleAddSize}
           className="text-white bg-green rounded-md w-fit px-4 py-1 text-sm mt-2"
         >
-          Add
+          Add Size
         </button>
       </div>
     </div>

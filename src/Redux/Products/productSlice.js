@@ -45,9 +45,7 @@ export const addProduct = createAsyncThunk(
         console.log(`${key}:`, value);
       }
 
-      const response = await axios.post(`${PRODUCT_API}/products/add`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(`${PRODUCT_API}/products/add`, formData);
 
       console.log(response.data);
       return response.data;

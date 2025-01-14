@@ -4,7 +4,7 @@ import Table from "../../common/Table";
 import OrderModal from "../../common/OrderModal"; // Adjust path
 import { NavLink } from "react-router-dom";
 import Toolbar from "../../common/Toolbar";
-import { fetchAllOrders } from "../../redux/Orders/ordersSlice";
+import { fetchAllOrders } from "../../Redux/Orders/ordersSlice";
 
 const OnlineOrders = () => {
   const [row, setRow] = useState(10);

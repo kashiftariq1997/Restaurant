@@ -1,44 +1,55 @@
+import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
 
-const CustomExtras = ({ extras, setExtras }) => {
+const CustomExtras = ({ initialExtras, updateExtras }) => {
+  // Local state for extras
+  const [extras, setExtras] = useState(
+    initialExtras.length > 0 ? initialExtras : [{ name: "", price: "" }]
+  );
+
+  // Add a new extra entry
   const handleAddExtra = () => {
-    const newExtras = [...extras, { name: "New Extra", price: 0 }];
-    setExtras("extras", newExtras); // Update form state
+    setExtras((prevExtras) => [...prevExtras, { name: "", price: "" }]);
   };
 
+  // Remove an extra entry
   const handleRemoveExtra = (index) => {
-    const newExtras = extras.filter((_, i) => i !== index);
-    setExtras("extras", newExtras); // Update form state
+    const updatedExtras = extras.filter((_, i) => i !== index);
+    setExtras(updatedExtras);
+    updateExtras(updatedExtras); // Update parent state
   };
 
-  const handleExtraChange = (index, field, value) => {
+  // Handle changes to name or price
+  const handleChange = (index, field, value) => {
     const updatedExtras = [...extras];
-    updatedExtras[index][field] = value;
-    setExtras("extras", updatedExtras); // Update form state
+    updatedExtras[index][field] = field === "price" ? parseFloat(value) || "" : value;
+    setExtras(updatedExtras);
+    updateExtras(updatedExtras); // Update parent state
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       <label className="text-xs text-lightGray">EXTRAS</label>
       <div className="flex flex-col gap-2">
-        {extras.map((extra, index) => (
+        {extras.map((item, index) => (
           <div key={index} className="flex items-center gap-2">
+            {/* Name Input */}
             <input
               type="text"
-              value={extra.name}
-              onChange={(e) => handleExtraChange(index, "name", e.target.value)}
+              value={item.name}
+              onChange={(e) => handleChange(index, "name", e.target.value)}
+              placeholder="Enter extra name (e.g., Cheese, Sauce)"
               className="border border-lightGray/20 p-2 rounded-md text-sm text-lightGray w-full"
-              placeholder="Extra Name"
             />
+            {/* Price Input */}
             <input
               type="number"
-              value={extra.price}
-              onChange={(e) =>
-                handleExtraChange(index, "price", e.target.value)
-              }
-              className="border border-lightGray/20 p-2 rounded-md text-sm text-lightGray w-24"
-              placeholder="Price"
+              value={item.price}
+              onChange={(e) => handleChange(index, "price", e.target.value)}
+              placeholder="Enter price"
+              className="border border-lightGray/20 p-2 rounded-md text-sm text-lightGray w-full"
             />
+            {/* Remove Button */}
             <button
               type="button"
               onClick={() => handleRemoveExtra(index)}
@@ -48,6 +59,7 @@ const CustomExtras = ({ extras, setExtras }) => {
             </button>
           </div>
         ))}
+        {/* Add Extra Button */}
         <button
           type="button"
           onClick={handleAddExtra}
