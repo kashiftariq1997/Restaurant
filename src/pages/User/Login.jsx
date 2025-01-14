@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../Redux/Users/userSlice";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate()
@@ -23,15 +24,22 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-     // Example validation
-  if (!input.email || !input.password) {
-    setErr("Email and password are required!");
-    return;
-  }  
-    console.log("Login: ", input);
-    dispatch(loginUser(input));
+  
+    if (!input.email || !input.password) {
+      toast.error("Email and password are required!"); // Show toast
+      return;
+    }
+  
+    dispatch(loginUser(input)).then((action) => {
+      if (loginUser.fulfilled.match(action)) {
+        navigate("/home"); // Navigate on successful login
+      } else if (loginUser.rejected.match(action)) {
+        // Show error toast on failure
+        toast.error(action.payload || "Login failed. Please try again.");
+      }
+    });
   };
+  
 
   return (
     <section className="flex flex-col items-center text-dark z-10 min-h-[calc(100vh-340px)] w-full">

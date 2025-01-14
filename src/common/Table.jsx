@@ -54,7 +54,7 @@ const Table = ({
   };
 
   return (
-    <div className="relative bg-white shadow-md rounded-md w-full">
+    <div className=" bg-white shadow-md rounded-md w-full">
       <table className="w-full border-collapse text-lightGray uppercase">
         <thead>
           <tr className="border-b border-lightGray/20">
@@ -73,38 +73,38 @@ const Table = ({
               className={`${index % 2 === 0 ? "bg-lightGray/5" : ""} border-b border-lightGray/20 text-sm text-nowrap`}
             >
               {columns.map((column) => (
-                <td key={column.key} className="text-left p-4 relative">
-                  {column.key === "status" ? (
-                    <>
-                      <span
-                        onClick={() => toggleDropdown(row._id)}
-                        className={`px-2 py-1 rounded-[6px] text-xs font-medium cursor-pointer ${getStatusClass(
-                          row[column.key]
-                        )}`}
-                      >
-                        {row[column.key]}
-                      </span>
-                      {dropdownRowId === row._id && (
-                        <div className="absolute top-full left-0 mt-2 bg-white border border-lightGray rounded-md shadow-lg z-10">
-                          {statusValues.map((option) => (
-                            <div
-                              key={option}
-                              onClick={() => {
-                                handleStatusChange(row._id, option); // Handle status change with confirmation
-                                setDropdownRowId(null); // Close dropdown after selecting an option
-                              }}
-                              className="px-4 py-2 text-sm text-dark cursor-pointer hover:bg-lightGray/10"
-                            >
-                              {option}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    row[column.key]
-                  )}
-                </td>
+                <td key={column.key} className="text-left p-4">
+                {column.key === "status" ? (
+                  <div className="relative inline-block">
+                    <span
+                      onClick={() => toggleDropdown(row._id)}
+                      className={`px-2 py-1 rounded-[6px] text-xs font-medium cursor-pointer ${getStatusClass(
+                        row[column.key]
+                      )}`}
+                    >
+                      {row[column.key]}
+                    </span>
+                    {dropdownRowId === row._id && (
+                      <div className="absolute top-full left-0 mt-2 bg-white border border-lightGray rounded-md shadow-lg z-10">
+                        {statusValues.map((option) => (
+                          <div
+                            key={option}
+                            onClick={() => {
+                              handleStatusChange(row._id, option); // Handle status change with confirmation
+                              setDropdownRowId(null); // Close dropdown after selecting an option
+                            }}
+                            className="px-4 py-2 text-sm text-dark cursor-pointer hover:bg-lightGray/10"
+                          >
+                            {option}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  row[column.key]
+                )}
+              </td>
               ))}
               {actions && (
                 <td className="text-left p-4 flex gap-2">

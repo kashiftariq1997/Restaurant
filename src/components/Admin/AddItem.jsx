@@ -47,10 +47,10 @@ const [formValues, setFormValues] = useState({
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
   
-    if (type === "checkbox") {
+    if (type === "radio") {
       setFormValues((prevState) => ({
         ...prevState,
-        [name]: checked,
+        [name]: value,
       }));
     } else if (name === "sizes" || name === "extras") {
       // Handle array fields like sizes and extras
@@ -66,6 +66,7 @@ const [formValues, setFormValues] = useState({
         [name]: value,
       }));
     }
+    console.log(formValues);
   };
 
   const handleImageChange = (e) => {
@@ -87,7 +88,7 @@ const [formValues, setFormValues] = useState({
       sizes: Array.isArray(formValues.sizes) ? formValues.sizes : [], // Ensure sizes is an array
       extras: Array.isArray(formValues.extras) ? formValues.extras : [], // Ensure extras is an array
     };
-  
+  console.log(formData);
     // Dispatch the addProduct action with the form data
   dispatch(addProduct(formData));
   
@@ -212,10 +213,12 @@ const [formValues, setFormValues] = useState({
                   <div className="flex items-center py-2 gap-4 text-lightGray text-sm">
                     <label className="flex gap-1">
                       <input
-                        type="radio"
-                        name="type"
-                        className="accent-primary"
-                        value={formValues.type}
+                         type="radio"
+                         name="type"
+                         value="Veg"
+                         checked={formValues.type === "Veg"}
+                         onChange={handleInputChange}
+                         className="accent-primary"
                         // {...register("type")}
                       />
                       Veg
@@ -224,7 +227,9 @@ const [formValues, setFormValues] = useState({
                       <input
                         type="radio"
                         name="type"
-                        value={formValues.type}
+                        value="Non-Veg"
+                        checked={formValues.type === "Non-Veg"}
+                        onChange={handleInputChange}
                         className="accent-primary"
                         // {...register("type")}
                       />
@@ -246,7 +251,9 @@ const [formValues, setFormValues] = useState({
                       <input
                         type="radio"
                         name="isFeatured"
-                        value={formValues.isFeatured}
+                        value={true}
+                        checked={formValues.isFeatured === true}
+                        onChange={handleInputChange}
                         className="accent-primary"
                          // {...register("isFeatured")}
                       />
@@ -256,7 +263,9 @@ const [formValues, setFormValues] = useState({
                       <input
                         type="radio"
                         name="isFeatured"
-                        value={formValues.isFeatured}
+                        value={false}
+                        checked={formValues.isFeatured === false}
+                        onChange={handleInputChange}
                         className="accent-primary"
                         // {...register("isFeatured")}
                       />
@@ -273,7 +282,9 @@ const [formValues, setFormValues] = useState({
                       <input
                         type="radio"
                         name="status"
-                        value={formValues.status}
+                        value="Active"
+                        checked={formValues.status === "Active"}
+                        onChange={handleInputChange}
                         className="accent-primary"
                         //{...register("status")}
                       />
@@ -283,7 +294,9 @@ const [formValues, setFormValues] = useState({
                       <input
                         type="radio"
                         name="status"
-                        value={formValues.status}
+                        value="Inactive"
+                        checked={formValues.status === "Inactive"}
+                        onChange={handleInputChange}
                         className="accent-primary"
                         //{...register("status")}
                       />
@@ -294,44 +307,24 @@ const [formValues, setFormValues] = useState({
               </div>
               {/* CoustomSize  */}
               <CustomSize
-                sizes={formValues.sizes}
-                setSizes={(updatedSizes) =>
-                  setFormValues((prevValues) => ({
-                    ...prevValues,
-                    sizes: updatedSizes,
-                  }))
-                }
-              />
+  initialSizes={formValues.sizes || []} // Pass existing sizes or an empty array
+  updateSizes={(updatedSizes) =>
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      sizes: updatedSizes,
+    }))
+  }
+/>
               {/* Extras toggle */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="addExtras"
-                  checked={showExtras}
-                  onChange={() => {setShowExtras(!showExtras);
-                                  handleInputChange;
-                  }}
-                  className="accent-primary"
-                  name="extras"
-                  value={formValues.extras}
-                />
-                <label htmlFor="addExtras" className="text-xs text-lightGray">
-                  Add Extras
-                </label>
-              </div>
-
-              {/* Display the extras section if checked */}
-              {showExtras && (
-                <CustomExtras
-                extras={formValues.extras}
-                setExtras={(updatedExtras) =>
-                  setFormValues((prevValues) => ({
-                    ...prevValues,
-                    extras: updatedExtras,
-                  }))
-                }
-              />
-              )}
+              <CustomExtras
+  initialExtras={formValues.extras || []} // Pass existing extras or an empty array
+  updateExtras={(updatedExtras) =>
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      extras: updatedExtras,
+    }))
+  }
+/>
               <div className="flex flex-col gap-2">
                 <label htmlFor="caution" className="text-xs text-lightGray">
                   CAUTION

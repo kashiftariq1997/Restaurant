@@ -56,20 +56,16 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${USER_API}/users/login`, credentials);
-      console.log(response.data);
-      console.log(response.data.data);
       const { accessToken, data } = response.data;
-      console.log(data);
 
-      // Save token and user data in sessionStorage
       sessionStorage.setItem("token", accessToken);
       sessionStorage.setItem("user", JSON.stringify(data));
 
-      // Return both token and user data
       return { accessToken, data };
     } catch (error) {
+      // Return a meaningful error message
       return rejectWithValue(
-        error.response?.data?.message || "Error logging in user"
+        error.response?.data?.message || "Invalid credentials. Please try again."
       );
     }
   }
@@ -84,6 +80,7 @@ export const logoutUser = createAsyncThunk(
       sessionStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("persist:user");
 
       return; // Return nothing as the state is cleared on the client side
     } catch (error) {
