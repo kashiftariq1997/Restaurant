@@ -5,6 +5,7 @@ import {
   getAllProducts,
   getProductById,
   updateProduct,
+  updateDishOfTheDay,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
@@ -14,6 +15,7 @@ router.get("/get", getAllProducts);
 router.get("/get/:id", getProductById);
 router.put("/update/:id", updateProduct);
 router.delete("/delete/:id", deleteProduct);
+router.patch("/update/dishOfTheDay/:id", updateDishOfTheDay);
 
 router.use("*", (req, res) => {
   res.status(404).json({ message: "Route not found" });

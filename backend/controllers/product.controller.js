@@ -177,6 +177,31 @@ export const updateProduct = async (req, res) => {
   }
 };
 
+export const updateDishOfTheDay = async (req, res) => {
+  const { id } = req.params;
+  const { isDishOfTheDay } = req.body;
+
+  try {
+    const product = await Product.findById(id); // Ensure `Product` is your model name
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    product.isDishOfTheDay = isDishOfTheDay; // Update the field
+    const updatedProduct = await product.save();
+
+    res.status(200).json({
+      message: "Dish of the Day status updated successfully",
+      data: updatedProduct,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to update Dish of the Day status",
+      error: error.message,
+    });
+  }
+};
+
 // Delete a product by id
 export const deleteProduct = async (req, res) => {
   const { id } = req.params;

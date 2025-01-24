@@ -1,17 +1,27 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import Toolbar from "../../common/Toolbar";
-import { itemsData, options } from "../../data";
 import Table from "../../common/Table";
 import AddItem from "../../components/Admin/AddItem";
+import { fetchAllProducts } from "../../Redux/Products/productSlice";
+import ItemModal from "../../common/ItemModal";
 
 const ListItems = () => {
   const [row, setRow] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const { sidebar } = useSelector((state) => state.sidebar);
+  const { products, status } = useSelector((state) => state.products);
   const [addItemVisible, setAddItemVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [selectedItem, setSelectedItem] = useState(null); // Selected item data
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
 
   const columns = [
     { key: "name", label: "NAME" },
@@ -29,10 +39,7 @@ const ListItems = () => {
       type: "select",
       options: [
         { value: "fastfood", label: "FASTFOOD" },
-        {
-          value: "salades",
-          label: "SALADES",
-        },
+        { value: "salades", label: "SALADES" },
       ],
     },
     {
@@ -64,24 +71,22 @@ const ListItems = () => {
       label: "STATUS",
       type: "select",
       options: [
-        {
-          value: "active",
-          label: "Active",
-        },
-        {
-          value: "inactive",
-          label: "Inactive",
-        },
+        { value: "active", label: "Active" },
+        { value: "inactive", label: "Inactive" },
       ],
     },
   ];
 
-  const paginatedData = itemsData.slice(
+  // Ensure products.data is defined
+  const productList = Array.isArray(products.data) ? products.data : [];
+
+  // Calculate paginated data
+  const paginatedData = productList.slice(
     (currentPage - 1) * row,
     currentPage * row
   );
 
-  const totalPages = Math.ceil(itemsData.length / row);
+  const totalPages = Math.ceil(productList.length / row);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -91,16 +96,31 @@ const ListItems = () => {
 
   const actions = {
     view: (item) => {
-      console.log("View:", item);
-      navigate(`/admin/items/show/${item.id}`);
+      setSelectedItem(item); // Store the selected item
+      setIsModalOpen(true); // Open the modal
     },
     edit: (item) => console.log("Edit:", item),
     delete: (item) => console.log("Delete:", item),
   };
 
+  useEffect(() => {
+    if (status === "loading") {
+      console.log("Loading products...");
+    } else if (status === "failed") {
+      console.error("Failed to fetch products.");
+    }
+  }, [status]);
+
   return (
     <>
       <AddItem value={addItemVisible} setValue={setAddItemVisible} />
+      {/* Item Modal */}
+      <ItemModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} // Close modal
+        item={selectedItem} // Pass the selected item
+        actionType="View"
+      />
       <section
         className={`${
           sidebar && "lg:pl-64"
@@ -122,23 +142,28 @@ const ListItems = () => {
             filterInputs={filterInputs}
             addItem={true}
             exportOption={true}
-            options={options}
             onFilterClick={(data) => console.log("Filter Data:", data)}
             onSelectChange={(value) => setRow(Number(value))}
             onAddClick={() => setAddItemVisible(true)}
           />
-          <Table
-            columns={columns}
-            data={paginatedData}
-            actions={actions}
-            pagination={{
-              rowsPerPage: row,
-              totalItems: itemsData.length,
-            }}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
+          {status === "loading" ? (
+            <p>Loading...</p>
+          ) : status === "failed" ? (
+            <p>Failed to load items.</p>
+          ) : (
+            <Table
+              columns={columns}
+              data={paginatedData}
+              actions={actions}
+              pagination={{
+                rowsPerPage: row,
+                totalItems: productList.length,
+              }}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
         </div>
       </section>
     </>

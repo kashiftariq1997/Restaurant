@@ -30,6 +30,8 @@ const OrderInfo = () => {
     setCircleColor(level); // Update the number of colored circles
   };
 
+  console.log(order);
+
   return (
     <>
       {status === "loading" ? (
@@ -81,7 +83,7 @@ const OrderInfo = () => {
                             <img src={placed} alt="Image" />
                           </div>
                           <p className="text-xs text-center">
-                            Got your order Mohamed Masseye DIOP!
+                            Got your order against Phone: {ord}
                           </p>
                         </>
                       )}

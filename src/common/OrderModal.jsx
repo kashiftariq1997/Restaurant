@@ -14,7 +14,7 @@ const OrderModal = ({ isOpen, onClose, order, actionType, onAction }) => {
   };
 
   // Fields to exclude
-  const excludedFields = ["createdAt", "updatedAt", "__v"];
+  const excludedFields = ["createdAt", "updatedAt", "__v", "message", "_id"];
 
   // Function to format the keys to readable format
   const formatKey = (key) => {
@@ -31,18 +31,17 @@ const OrderModal = ({ isOpen, onClose, order, actionType, onAction }) => {
           {actionType} Order
         </h2>
 
-        {/* Order details (left column) */}
+        {/* Order details */}
         <div className="flex-1 grid grid-cols-2 gap-6 mb-6 overflow-y-auto">
           {Object.keys(order).map((key) => {
             if (excludedFields.includes(key)) return null; // Skip excluded fields
 
             const value = order[key];
 
-            // Render 'items' field meta data
+            // Render 'items' field with detailed item meta data
             if (key === "items" && Array.isArray(value)) {
               return (
                 <div key={key} className="col-span-2">
-                  {/* Render meta data for items */}
                   <strong className="text-xl font-semibold text-gray-700">{formatKey(key)}:</strong>
                   <ul className="list-disc pl-6 mt-2 space-y-4">
                     {value.map((item, index) => (
@@ -56,7 +55,7 @@ const OrderModal = ({ isOpen, onClose, order, actionType, onAction }) => {
 
                   {/* Button to toggle item details visibility */}
                   <button
-                    className="mt-4 bg-blue-500 text-gray-700 px-6 py-2 rounded-full shadow-lg hover:bg-blue-600 transition-transform transform hover:scale-105"
+                    className="mt-4 bg-gray-300 text-black px-6 py-2 rounded-full shadow-lg hover:bg-gray-600 transition-transform transform hover:scale-105"
                     onClick={toggleItems}
                   >
                     {showItems ? "Hide Items" : "See Items"}
@@ -68,11 +67,12 @@ const OrderModal = ({ isOpen, onClose, order, actionType, onAction }) => {
                       {value.map((item, index) => (
                         <li key={index} className="bg-white rounded-lg shadow-lg p-4">
                           <div className="flex gap-6 items-center">
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                              className="w-[100px] h-[100px] object-cover rounded-lg shadow-md border border-gray-200"
-                            />
+                          <img
+                            src={item.image || "/path/to/placeholder-image.jpg"} // Fallback image if `item.image` is missing
+                            alt={item.name || "Item image"}
+                            className="w-[100px] h-[100px] object-cover rounded-lg shadow-md border border-gray-200"
+                            onError={(e) => (e.target.src = "/path/to/placeholder-image.jpg")} // Fallback for broken image URLs
+                          />
                             <div className="flex flex-col space-y-2">
                               <span className="font-bold text-lg text-gray-800">{item.name}</span>
                               <span className="text-gray-600">{item.category}</span>
@@ -80,24 +80,30 @@ const OrderModal = ({ isOpen, onClose, order, actionType, onAction }) => {
                               <span className="font-semibold text-gray-700">Price: ${item.price}</span>
                               <span className="text-gray-600">Quantity: {item.quantity}</span>
                               <div>
-                                <strong className="text-gray-700">Sizes:</strong>
-                                <ul className="list-disc pl-4 text-gray-600">
-                                  {item.sizes.map((size, idx) => (
-                                    <li key={idx}>
-                                      {size.size} - ${size.price}
+                                <strong className="text-gray-700">Selected Size:</strong>
+                                {item.selectedSize ? (
+                                  <ul className="list-disc pl-4 text-gray-600">
+                                    <li>
+                                      {item.selectedSize.size} - ${item.selectedSize.price}
                                     </li>
-                                  ))}
-                                </ul>
+                                  </ul>
+                                ) : (
+                                  <p className="italic text-gray-500">No size selected</p>
+                                )}
                               </div>
                               <div>
-                                <strong className="text-gray-700">Extras:</strong>
-                                <ul className="list-disc pl-4 text-gray-600">
-                                  {item.extras.map((extra, idx) => (
-                                    <li key={idx}>
-                                      {extra.name} - ${extra.price}
-                                    </li>
-                                  ))}
-                                </ul>
+                                <strong className="text-gray-700">Selected Extras:</strong>
+                                {item.selectedExtras?.length > 0 ? (
+                                  <ul className="list-disc pl-4 text-gray-600">
+                                    {item.selectedExtras.map((extra, idx) => (
+                                      <li key={idx}>
+                                        {extra.name} - ${extra.price}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                ) : (
+                                  <p className="italic text-gray-500">No extras selected</p>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -121,7 +127,7 @@ const OrderModal = ({ isOpen, onClose, order, actionType, onAction }) => {
 
         <div className="mt-4 flex justify-between items-center">
           <button
-            className="bg-green-500 text-gray-700 px-8 py-3 rounded-full shadow-lg hover:bg-green-600 transition-transform transform hover:scale-105"
+            className="bg-green-500 text-gray-500 px-8 py-3 rounded-full shadow-lg hover:bg-green-600 transition-transform transform hover:scale-105"
             onClick={handleAction}
           >
             Confirm {actionType}

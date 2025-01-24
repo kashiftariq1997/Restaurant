@@ -1,51 +1,39 @@
-import { Clock, ChefHat, Award } from "lucide-react";
-import { useState } from "react";
-import dishOfTheDay1 from "../../assets/images/dishoftheday1.jpeg";
-import dishOfTheDay2 from "../../assets/images/dishoftheday2.jpeg";
-import dishOfTheDay3 from "../../assets/images/dishoftheday3.jpeg";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchAllProducts } from "../../Redux/Products/productSlice.js";
+import AddModal from "../../common/AddModal";
+import { addToCart } from "../../Redux/Cart/cartSlice";
 
-// Dummy Data for Dishes
-const dishes = [
-  {
-    id: 1,
-    name: "Thiéboudienne Royal",
-    description:
-      "Le plat national sénégalais par excellence. Riz au poisson préparé avec des légumes frais, garni de sauce tomate et accompagné de légumes de saison.",
-    chef: "Chef Aminata Sow",
-    time: "25-30 minutes",
-    specialty: "Spécialité du Chef",
-    price: "5 000 XOF",
-    availableUntil: "22h",
-    image: dishOfTheDay1,
-  },
-  {
-    id: 2,
-    name: "Poulet Yassa",
-    description:
-      "Poulet mariné avec des oignons et du citron, servi avec du riz parfumé et une sauce onctueuse.",
-    chef: "Chef Alassane Diallo",
-    time: "20-25 minutes",
-    specialty: "Favori des Clients",
-    price: "4 500 XOF",
-    availableUntil: "22h",
-    image: dishOfTheDay2,
-  },
-  {
-    id: 3,
-    name: "Mafé de Bœuf",
-    description:
-      "Un ragoût de bœuf aux arachides, accompagné de riz blanc et de légumes frais.",
-    chef: "Chef Mariama Ndiaye",
-    time: "30-35 minutes",
-    specialty: "Plat Réconfortant",
-    price: "6 000 XOF",
-    availableUntil: "22h",
-    image: dishOfTheDay3,
-  },
-];
+const USER_API = import.meta.env.VITE_API_URL;
 
 const Offers = () => {
+  const { products, status } = useSelector((state) => state.products);
+  const dispatch = useDispatch();
+
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [selectedDish, setSelectedDish] = useState(null);
+
+  // Fetch products when the component mounts
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+
+  // Filter products to get only dishes of the day
+  const dishes = Array.isArray(products.data)
+    ? products.data.filter((product) => product.isDishOfTheDay)
+    : [];
+
+  // Add to cart function
+  const handleAddToCart = (item) => {
+    dispatch(addToCart(item)); // Dispatch item to the cart
+    setOpen(false); // Close the modal
+  };
+
+  const handleOpenModal = () => {
+    setSelectedDish(dishes[currentIndex]);
+    setOpen(true);
+  };
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % dishes.length);
@@ -57,22 +45,61 @@ const Offers = () => {
     );
   };
 
+  useEffect(() => {
+    const intervalId = setInterval(handleNext, 3000);
+    return () => clearInterval(intervalId);
+  }, [dishes]);
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  if (dishes.length === 0) {
+    return <div>No dishes of the day available.</div>;
+  }
+
   const currentDish = dishes[currentIndex];
+  const imageURL =
+    currentDish.image
+      ? `${USER_API.replace("/api", "")}${currentDish.image}`
+      : "/path/to/fallback/image.jpg"; // Fallback image
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="pt-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden shadow-xl">
-            <div className="relative h-[400px]">
+      <main className="pt-12">
+        <div className="container mx-auto px-0 mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 text-center">
+            Our Specialties of the Day
+          </h1>
+          <p className="text-lg text-gray-600 text-center mt-4">
+            Discover our delicious daily specials, carefully prepared by our
+            chefs to offer you a unique culinary experience.
+          </p>
+        </div>
+
+        {/* AddModal Integration */}
+        {selectedDish && (
+          <AddModal
+            open={open}
+            setOpen={setOpen}
+            product={selectedDish}
+            onAddToCart={handleAddToCart} // Pass the addToCart handler
+          />
+        )}
+
+        <div className="container mx-auto px-0">
+          <div className="w-full max-w-3xl bg-white rounded-2xl overflow-hidden shadow-xl mx-auto">
+            <div className="relative h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
               <img
-                src={currentDish.image}
+                src={imageURL}
                 alt={currentDish.name}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
                 <div className="text-white">
-                  <h1 className="text-4xl font-bold mb-2">{currentDish.name}</h1>
+                  <h1 className="text-3xl font-bold mb-2">
+                    {currentDish.name}
+                  </h1>
                   <p className="text-lg opacity-90">Plat du Jour</p>
                 </div>
               </div>
@@ -80,48 +107,31 @@ const Offers = () => {
               {/* Navigation Buttons */}
               <button
                 onClick={handlePrev}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-gray-200 rounded-full hover:bg-gray-300"
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 rounded-full hover:bg-gray-300"
               >
                 &larr;
               </button>
               <button
                 onClick={handleNext}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-gray-200 rounded-full hover:bg-gray-300"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 rounded-full hover:bg-gray-300"
               >
                 &rarr;
               </button>
             </div>
 
-            <div className="p-8">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-6">
+            <div className="p-4 md:p-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
                   <h2 className="text-2xl font-bold text-gray-900">
                     Description
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
-                    {currentDish.description}
+                    {currentDish.description || "No description available."}
                   </p>
-
-                  <div className="flex items-center space-x-8">
-                    <div className="flex items-center space-x-2">
-                      <ChefHat className="w-5 h-5 text-[#f253aa]" />
-                      <span className="text-gray-600">{currentDish.chef}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Clock className="w-5 h-5 text-[#f253aa]" />
-                      <span className="text-gray-600">{currentDish.time}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Award className="w-5 h-5 text-[#f253aa]" />
-                      <span className="text-gray-600">
-                        {currentDish.specialty}
-                      </span>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="flex flex-col justify-between">
-                  <div className="text-center mb-6">
+                  <div className="text-center mb-4">
                     <div className="text-4xl font-bold text-[#f253aa] mb-2">
                       {currentDish.price}
                     </div>
@@ -129,15 +139,12 @@ const Offers = () => {
                   </div>
 
                   <div className="space-y-4">
-                    <button className="w-full h-12 bg-[#f253aa] hover:bg-[#f253aa]/90 text-white">
+                    <button
+                      className="w-full h-12 bg-[#f253aa] hover:bg-[#f253aa]/90 text-white"
+                      onClick={handleOpenModal}
+                    >
                       Commander Maintenant
                     </button>
-
-                    <div className="text-center">
-                      <p className="text-sm text-gray-500">
-                        Disponible aujourd'hui jusqu'à {currentDish.availableUntil}
-                      </p>
-                    </div>
                   </div>
                 </div>
               </div>

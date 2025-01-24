@@ -6,7 +6,7 @@ export default {
       padding: "1rem",
       screens: {
         md: "1180px",
-        lg: "1180px",
+        lg: "1280px",
       },
     },
     extend: {

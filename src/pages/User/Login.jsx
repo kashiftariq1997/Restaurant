@@ -5,14 +5,13 @@ import { loginUser } from "../../Redux/Users/userSlice";
 import { toast } from "react-toastify";
 
 const Login = () => {
-  const navigate = useNavigate()
-  const [err, setErr] = useState("");
+  const navigate = useNavigate();
   const [input, setInput] = useState({
-    email: "",
-    phone:"",
+    identifier: "", // Single field for email/phone
     password: "",
+    rememberMe: false,
   });
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -24,22 +23,20 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    if (!input.email || !input.password) {
-      toast.error("Email and password are required!"); // Show toast
+
+    if (!input.identifier || !input.password) {
+      toast.error("Identifier and password are required!");
       return;
     }
-  
-    dispatch(loginUser(input)).then((action) => {
+
+    dispatch(loginUser({ identifier: input.identifier, password: input.password })).then((action) => {
       if (loginUser.fulfilled.match(action)) {
-        navigate("/home"); // Navigate on successful login
+        navigate("/home");
       } else if (loginUser.rejected.match(action)) {
-        // Show error toast on failure
         toast.error(action.payload || "Login failed. Please try again.");
       }
     });
   };
-  
 
   return (
     <section className="flex flex-col items-center text-dark z-10 min-h-[calc(100vh-340px)] w-full">
@@ -48,46 +45,20 @@ const Login = () => {
           onSubmit={handleSubmit}
           className="my-10 shadow-lg flex flex-col p-6 w-full md:w-[360px] rounded-xl text-dark"
         >
-          <h1 className="text-2xl font-semibold text-center mb-10">
-            Welcome Back
-          </h1>
-          {err && (
-            <p className="text-base text-orange bg-orange/10 p-3 rounded-md border border-orange mb-4">
-              {err}
-            </p>
-          )}
-          <label htmlFor="email" className="text-sm">
-            Email
+          <h1 className="text-2xl font-semibold text-center mb-10">Welcome Back</h1>
+          <label htmlFor="identifier" className="text-sm">
+            Email or Phone
           </label>
           <input
-            id="email"
-            type="email"
-            value={input.email}
-            name="email"
+            id="identifier"
+            type="text"
+            value={input.identifier}
+            name="identifier"
             onChange={handleChange}
             required
-            placeholder="Email"
+            placeholder="Email or Phone"
             className="border border-lightGray/20 px-4 py-3 text-sm text-lightGray rounded-lg mt-1"
           />
-          {err && (
-            <p className="text-base text-orange bg-orange/10 p-3 rounded-md border border-orange mb-4">
-              {err}
-            </p>
-          )}
-          <label htmlFor="phone" className="text-sm mt-4">
-            Phone
-          </label>
-          <input
-            id="phone"
-            type="phone"
-            value={input.phone}
-            name="phone"
-            onChange={handleChange}
-            required
-            placeholder="Phone"
-            className="border border-lightGray/20 px-4 py-3 text-sm text-lightGray rounded-lg mt-1"
-          />
-          {err && <small className="text-xs text-orange mt-1">{err}</small>}
           <label htmlFor="password" className="text-sm mt-4">
             Password
           </label>
@@ -111,9 +82,7 @@ const Login = () => {
                 checked={input.rememberMe}
                 onChange={handleChange}
               />
-              <label htmlFor="rememberMe" className="cursor-pointer">
-                Remember Me
-              </label>
+              <label htmlFor="rememberMe" className="cursor-pointer">Remember Me</label>
             </div>
             <Link
               to="/forget-password"
@@ -122,22 +91,11 @@ const Login = () => {
               Forgot Password
             </Link>
           </div>
-          <button className="rounded-full bg-secondary text-white text-base font-semibold p-3 my-6">
-            Login
-          </button>
+          <button className="rounded-full bg-secondary text-white text-base font-semibold p-3 my-6">Login</button>
           <p className="text-xs text-center text-lightGray">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-primary cursor-pointer">
-              {" "}
-              Signup
-            </Link>
+            <Link to="/register" className="text-primary cursor-pointer">Signup</Link>
           </p>
-          <p className="text-center text-sm text-lightGray my-3">OR</p>
-          <button className="rounded-full bg-transparent border border-primary text-primary text-base font-semibold p-3"
-           onClick={()=>navigate('/signup')}
-           >
-            Login As Guest
-          </button>
         </form>
       </div>
     </section>

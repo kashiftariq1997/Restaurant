@@ -75,7 +75,7 @@ const Table = ({
               {columns.map((column) => (
                 <td key={column.key} className="text-left p-4">
                 {column.key === "status" ? (
-                  <div className="relative inline-block">
+                  <div className="inline-block">
                     <span
                       onClick={() => toggleDropdown(row._id)}
                       className={`px-2 py-1 rounded-[6px] text-xs font-medium cursor-pointer ${getStatusClass(
@@ -84,6 +84,7 @@ const Table = ({
                     >
                       {row[column.key]}
                     </span>
+                    <div className="relative">
                     {dropdownRowId === row._id && (
                       <div className="absolute top-full left-0 mt-2 bg-white border border-lightGray rounded-md shadow-lg z-10">
                         {statusValues.map((option) => (
@@ -100,6 +101,7 @@ const Table = ({
                         ))}
                       </div>
                     )}
+                    </div>
                   </div>
                 ) : (
                   row[column.key]

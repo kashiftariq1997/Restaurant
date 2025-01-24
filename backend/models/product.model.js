@@ -25,6 +25,7 @@ const productSchema = new mongoose.Schema(
     caution: { type: String, trim: true },
     description: { type: String, trim: true },
     createdAt: { type: Date, default: Date.now },
+    isDishOfTheDay: { type: Boolean, default: false, trim: true },
   },
   { timestamps: true }
 );

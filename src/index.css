@@ -77,3 +77,53 @@ body {
   font-size: 16px;
   font-weight: 500;
 }
+
+@keyframes circular-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes circular-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.border-spin {
+  width: 100px; /* Adjust size as needed */
+  height: 100px; 
+  border-radius: 50%;
+   position: relative;
+
+  /* Create a half-circle using conic-gradient */
+  background-image: conic-gradient(
+    #8B5CF6 0deg 180deg, /* First half: colored */
+    transparent 180deg 360deg 
+    /* Second half: transparent */
+  );
+
+  mask: radial-gradient(circle, transparent 65%, black 71%);
+  -webkit-mask: radial-gradient(circle, transparent 65%, black 71%);
+
+  animation: circular-spin 2s linear infinite;
+}
+
+
+.center-text {
+  color: black;
+}
+
+.border-blue-500 {
+  border: 8px solid #8B5CF6;
+}
+
+.border-gray-300 {
+  border: 8px solid #E5E7EB;
+}

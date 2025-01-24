@@ -27,6 +27,7 @@ const [formValues, setFormValues] = useState({
   extras:[] ,
   caution: "",
   description: "", // Fix typo from "discription" to "description"
+  isDishOfTheDay: false,
 });
 
    const dispatch=useDispatch();
@@ -43,29 +44,41 @@ const [formValues, setFormValues] = useState({
   //   },
   // });
 
-  // Handle input change function
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
   
-    if (type === "radio") {
-      setFormValues((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    } else if (name === "sizes" || name === "extras") {
-      // Handle array fields like sizes and extras
-      const updatedArray = name === "sizes" ? formValues.sizes : formValues.extras;
-      const newArray = value ? [...updatedArray, value] : updatedArray; // Add new value to array
-      setFormValues((prevState) => ({
-        ...prevState,
-        [name]: newArray,
-      }));
-    } else {
-      setFormValues((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
+    setFormValues((prevState) => {
+      if (type === "radio") {
+        // Convert string values "true" and "false" to boolean for specific fields
+        const updatedValue =
+          value === "true" || value === "false" ? value === "true" : value;
+  
+        return {
+          ...prevState,
+          [name]: updatedValue,
+        };
+      } else if (name === "sizes" || name === "extras") {
+        // Handle array fields like sizes and extras
+        const updatedArray = name === "sizes" ? prevState.sizes : prevState.extras;
+        const newArray = value ? [...updatedArray, value] : updatedArray; // Add new value to array
+        return {
+          ...prevState,
+          [name]: newArray,
+        };
+      } else if (type === "checkbox") {
+        // Handle checkbox inputs
+        return {
+          ...prevState,
+          [name]: checked,
+        };
+      } else {
+        return {
+          ...prevState,
+          [name]: value,
+        };
+      }
+    });
+  
     console.log(formValues);
   };
 
@@ -251,7 +264,7 @@ const [formValues, setFormValues] = useState({
                       <input
                         type="radio"
                         name="isFeatured"
-                        value={true}
+                        value="true"
                         checked={formValues.isFeatured === true}
                         onChange={handleInputChange}
                         className="accent-primary"
@@ -263,7 +276,7 @@ const [formValues, setFormValues] = useState({
                       <input
                         type="radio"
                         name="isFeatured"
-                        value={false}
+                        value="false"
                         checked={formValues.isFeatured === false}
                         onChange={handleInputChange}
                         className="accent-primary"
@@ -304,27 +317,58 @@ const [formValues, setFormValues] = useState({
                     </label>
                   </div>
                 </div>
+                <div className="flex flex-col gap-2 w-full flex-1">
+                  <label htmlFor="isDishOfTheDay" className="text-xs text-lightGray">
+                    Dish Of The Day
+                  </label>
+                  <div className="flex items-center py-2 gap-4 text-lightGray text-sm">
+                    <label className="flex gap-1">
+                      <input
+                        type="radio"
+                        name="isDishOfTheDay"
+                        value="true"
+                        checked={formValues.isDishOfTheDay === true}
+                        onChange={handleInputChange}
+                        className="accent-primary"
+                        //{...register("status")}
+                      />
+                      Yes
+                    </label>
+                    <label className="flex gap-1">
+                      <input
+                        type="radio"
+                        name="isDishOfTheDay"
+                        value="false"
+                        checked={formValues.isDishOfTheDay === false}
+                        onChange={handleInputChange}
+                        className="accent-primary"
+                        //{...register("status")}
+                      />
+                      No
+                    </label>
+                  </div>
+                </div>
               </div>
               {/* CoustomSize  */}
               <CustomSize
-  initialSizes={formValues.sizes || []} // Pass existing sizes or an empty array
-  updateSizes={(updatedSizes) =>
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      sizes: updatedSizes,
-    }))
-  }
-/>
+                initialSizes={formValues.sizes || []} // Pass existing sizes or an empty array
+                updateSizes={(updatedSizes) =>
+                  setFormValues((prevValues) => ({
+                    ...prevValues,
+                    sizes: updatedSizes,
+                  }))
+                }
+              />
               {/* Extras toggle */}
               <CustomExtras
-  initialExtras={formValues.extras || []} // Pass existing extras or an empty array
-  updateExtras={(updatedExtras) =>
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      extras: updatedExtras,
-    }))
-  }
-/>
+                  initialExtras={formValues.extras || []} // Pass existing extras or an empty array
+                  updateExtras={(updatedExtras) =>
+                    setFormValues((prevValues) => ({
+                      ...prevValues,
+                      extras: updatedExtras,
+                    }))
+                  }
+                />
               <div className="flex flex-col gap-2">
                 <label htmlFor="caution" className="text-xs text-lightGray">
                   CAUTION

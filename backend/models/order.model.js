@@ -13,14 +13,26 @@ const sizesSchema = new mongoose.Schema({
 });
 
 const itemsSchema = new mongoose.Schema({
-  name: { type: String, trim: true, trim: true },
+  name: { type: String, trim: true },
   category: { type: String, trim: true },
   description: { type: String, trim: true },
   image: { type: String, trim: true },
-  price: { type: Number, trim: true },
+  price: { type: Number, trim: true }, // Base price
   quantity: { type: Number, trim: true },
-  sizes: [sizesSchema],
-  extras: [extrasSchema],
+  sizes: [sizesSchema], // Available sizes
+  extras: [extrasSchema], // Available extras
+  selectedSize: { // User's selected size
+    size: { type: String, trim: true },
+    price: { type: Number, trim: true },
+    _id: { type: mongoose.Schema.Types.ObjectId, auto: false },
+  },
+  selectedExtras: [ // User's selected extras
+    {
+      name: { type: String, trim: true },
+      price: { type: Number, trim: true },
+      _id: { type: mongoose.Schema.Types.ObjectId, auto: false },
+    },
+  ],
   caution: { type: String, trim: true },
   isFeatured: { type: Boolean, default: false },
   type: { type: String, trim: true },

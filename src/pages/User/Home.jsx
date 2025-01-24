@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Header from "../../components/user/Header";
 import Menu from "./Menu";
-import { menu, items, popularItems, extra } from "../../data";
+import { menu } from "../../data";
 import FeaturedCard from "../../components/user/FeaturedItemCard";
 import PopulartItemCard from "../../components/user/PopulartItemCard";
 import HeroSlider from "../../components/user/HeroSlider";
@@ -12,32 +12,32 @@ import { NavLink } from "react-router-dom";
 import { t } from "i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllProducts } from "../../Redux/Products/productSlice";
+
 const Home = () => {
   const { orders } = useSelector((state) => state.orders);
   const { products, status, error } = useSelector((state) => state.products);
   const { accessToken } = useSelector((state) => state.users);
 
-  const order=false;
+  const order = false;
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, []);
 
-  // console.log("Products: ", products);
-  // console.log("Status: ", status);
-  // console.log("error: ", error);
-
   return (
     <>
       <section className="flex flex-col items-center text-dark z-10 min-h-[100vh] w-full">
         {order && <Header />}
-        {/* Home Page  */}
-        <div className="w-full p-4 md:container">
-          {/* Hero section  */}
+        {/* Home Page */}
+        <div className="w-full py-0 mt-2 mr-0 md:container">
+          {/* Hero Section */}
           <HeroSlider />
+
+          {/* Menu Section */}
           <Menu />
-          {/* Our Menu  */}
+
+          {/* Our Menu */}
           {/* <div className="mb-12">
             <div className="flex justify-between">
               <h1 className="text-2xl font-semibold mb-6">{t("OurMenu")}</h1>
@@ -63,7 +63,7 @@ const Home = () => {
             </div>
           </div> */}
 
-          {/* Most Popular Items  */}
+          {/* Most Popular Items */}
           {/* <div className="mb-12">
             <h1 className="text-2xl font-semibold my-6">
               {t("mostPopularItmes")}

@@ -10,65 +10,77 @@ const createToken = (_id, phone) => {
 };
 
 export const signup = async (req, res) => {
-  const { name, phone, email, ...optionalFields } = req.body;
+  const { name, phone, email, password } = req.body;
 
-  if (!name || !phone) {
-    return res.status(400).json({ message: "Name and phone are required!" });
+  if (!name || (!phone && !email)) {
+    return res
+      .status(400)
+      .json({ message: "Name and either phone or email are required!" });
   }
 
   try {
-    const userData = { name, phone, ...optionalFields };
-    if (email) {
-      userData.email = email;
+    // Check for existing users with the same phone or email
+    const existingUser = await User.findOne({
+      $or: [{ phone }, { email }],
+    });
+
+    if (existingUser) {
+      if (existingUser.phone === phone) {
+        return res
+          .status(409)
+          .json({ message: "User with this phone number already exists!" });
+      }
+      if (existingUser.email === email) {
+        return res
+          .status(409)
+          .json({ message: "User with this email already exists!" });
+      }
     }
 
-    const isSignedUp = await User.findOne({ phone });
-    if (isSignedUp) {
-      return res.status(409).json({ message: "User already exists!" });
-    }
+    // Create new user
+    const user = new User({
+      name,
+      phone: phone || null,
+      email: email || null,
+      password, // Ensure password is hashed before saving
+    });
 
-    const user = new User(userData);
     await user.save();
 
-    //const token = createToken(user._id, user.phone);
-
-    const { password, ...rest } = user._doc;
+    const { password: _, ...rest } = user._doc; // Exclude password from response
     res.status(201).json({
       message: "User created successfully!",
       data: rest,
-      // accessToken: token,
     });
   } catch (error) {
     res.status(500).json({ message: "Error creating user!", error });
   }
 };
 
+
 export const signin = async (req, res) => {
-  const { email, phone, password } = req.body;
-  console.log("emailemailemailemailemailemail", email, phone, password)
-  if (!email && !phone) {
+  const { identifier, password } = req.body;
+
+  if (!identifier) {
     return res.status(400).json({ message: "Email or phone is required!" });
   }
 
   try {
     const query = {};
-    if (email) query.email = email;
-    if (phone) query.phone = phone;
+    if (/\S+@\S+\.\S+/.test(identifier)) {
+      query.email = identifier; // If identifier is an email
+    } else {
+      query.phone = identifier; // If identifier is a phone number
+    }
 
-    const user = await User.findOne({
-      $or: [query],
-    });
-    // const user = await User.findOne({
-    //   $or: [{ email }, { phone }],
-    // });
-    console.log("useruseruseruseruseruseruser", user)
+    const user = await User.findOne(query);
+
     if (!user) {
       return res.status(404).json({ message: "User not found!" });
     }
 
     if (password) {
-      //const isMatch = await bcrypt.compare(password, user.password);
-      if (password!=user.password) {
+      if (password !== user.password) {
         return res.status(400).json({ message: "Invalid credentials!" });
       }
     }

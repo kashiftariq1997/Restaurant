@@ -12,54 +12,93 @@ export const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const item = action.payload;
-      const existingItem = state.items.find((i) => i._id === item._id);
+      const uniqueId = `${item._id}-${item.selectedSize?.size || "default"}-${
+        item.selectedExtras?.map((extra) => extra._id).join("-") || "no-extras"
+      }`;
+
+      const existingItem = state.items.find((i) => i.uniqueId === uniqueId);
 
       if (existingItem) {
-        existingItem.quantity += 1;
+        existingItem.quantity += item.quantity || 1;
       } else {
-        state.items.push({ ...item, quantity: 1 });
+        state.items.push({
+          ...item,
+          uniqueId,
+          quantity: item.quantity || 1,
+        });
       }
 
-      state.totalPrice += item.price;
-      state.totalItems += 1;
+      const extrasTotal = (item.selectedExtras || []).reduce(
+        (sum, extra) => sum + extra.price,
+        0
+      );
+
+      state.totalPrice +=
+        ((item.selectedSize?.price || item.price) + extrasTotal) *
+        (item.quantity || 1);
+      state.totalItems += item.quantity || 1;
     },
 
     removeFromCart: (state, action) => {
-      const id = action.payload;
-      const itemToRemove = state.items.find((item) => item._id === id);
+      const uniqueId = action.payload;
+      const itemToRemove = state.items.find((item) => item.uniqueId === uniqueId);
 
       if (itemToRemove) {
-        state.totalPrice -= itemToRemove.price * itemToRemove.quantity;
+        const extrasTotal = (itemToRemove.selectedExtras || []).reduce(
+          (sum, extra) => sum + extra.price,
+          0
+        );
+
+        state.totalPrice -=
+          ((itemToRemove.selectedSize?.price || itemToRemove.price) +
+            extrasTotal) *
+          itemToRemove.quantity;
         state.totalItems -= itemToRemove.quantity;
       }
 
-      state.items = state.items.filter((item) => item._id !== id);
+      state.items = state.items.filter((item) => item.uniqueId !== uniqueId);
     },
 
     incrementQuantity: (state, action) => {
-      const id = action.payload;
-      const existingItem = state.items.find((item) => item._id === id);
+      const uniqueId = action.payload;
+      const existingItem = state.items.find((item) => item.uniqueId === uniqueId);
 
       if (existingItem) {
+        const extrasTotal = (existingItem.selectedExtras || []).reduce(
+          (sum, extra) => sum + extra.price,
+          0
+        );
+
         existingItem.quantity += 1;
-        state.totalPrice += existingItem.price;
+        state.totalPrice +=
+          (existingItem.selectedSize?.price || existingItem.price) +
+          extrasTotal;
         state.totalItems += 1;
       }
     },
 
     decrementQuantity: (state, action) => {
-      const id = action.payload;
-      const existingItem = state.items.find((item) => item._id === id);
+      const uniqueId = action.payload;
+      const existingItem = state.items.find((item) => item.uniqueId === uniqueId);
 
       if (existingItem) {
+        const extrasTotal = (existingItem.selectedExtras || []).reduce(
+          (sum, extra) => sum + extra.price,
+          0
+        );
+
         if (existingItem.quantity > 1) {
           existingItem.quantity -= 1;
-          state.totalPrice -= existingItem.price;
+          state.totalPrice -=
+            (existingItem.selectedSize?.price || existingItem.price) +
+            extrasTotal;
           state.totalItems -= 1;
         } else {
-          state.totalPrice -= existingItem.price;
+          state.totalPrice -=
+            (existingItem.selectedSize?.price || existingItem.price) +
+            extrasTotal;
           state.totalItems -= 1;
-          state.items = state.items.filter((item) => item._id !== id);
+          state.items = state.items.filter((item) => item.uniqueId !== uniqueId);
         }
       }
     },

@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../../Redux/Users/userSlice";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Register = () => {
-  const location = useLocation();
-  const { tel } = location.state || {};  // Access 'tel' passed as state
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [err, setErr] = useState("");
   const [input, setInput] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
+    phone: "",
     email: "",
     password: "",
   });
-  const dispatch=useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,16 +23,35 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Check for at least one of email or phone
+    if (!input.email && !input.phone) {
+      toast.error("Please provide either an email or phone number.");
+      return;
+    }
+  
     const signinData = {
-      name: `${input.firstName} ${input.lastName}`,
-      email: input.email,
-      phone: tel,  // Pass 'tel' from Signup page
+      name: input.name,
+      email: input.email || null,
+      phone: input.phone || null,
       password: input.password,
     };
-    console.log("Register: ", signinData);
-    dispatch(registerUser(signinData));
+  
+    try {
+      const result = await dispatch(registerUser(signinData)).unwrap();
+      toast.success("Registration successful!");
+      navigate("/login");
+    } catch (error) {
+      if (error.includes("phone")) {
+        toast.error("User with this phone number already exists!");
+      } else if (error.includes("email")) {
+        toast.error("User with this email already exists!");
+      } else {
+        toast.error(error || "Registration failed. Please try again.");
+      }
+    }
   };
 
   return (
@@ -52,13 +71,13 @@ const Register = () => {
           )}
           <div className="flex flex-col md:flex-row gap-4 md:gap-6">
             <div className="flex flex-col w-full">
-              <label htmlFor="firstName" className="text-sm">
-                First Name
+              <label htmlFor="name" className="text-sm">
+                Name
               </label>
               <input
-                id="firstName"
-                value={input.firstName}
-                name="firstName"
+                id="name"
+                value={input.name}
+                name="name"
                 onChange={handleChange}
                 required
                 className="border border-lightGray/20 px-4 py-3 text-sm text-lightGray rounded-lg mt-1 mb-4"
@@ -71,20 +90,18 @@ const Register = () => {
                 name="email"
                 value={input.email}
                 onChange={handleChange}
-                required
                 className="border border-lightGray/20 px-4 py-3 text-sm text-lightGray rounded-lg mt-1 mb-4"
               />
             </div>
             <div className="flex flex-col w-full">
-              <label htmlFor="lastName" className="text-sm">
-                Last Name
+              <label htmlFor="phone" className="text-sm">
+                Phone
               </label>
               <input
-                id="lastName"
-                value={input.lastName}
-                name="lastName"
+                id="phone"
+                value={input.phone}
+                name="phone"
                 onChange={handleChange}
-                required
                 className="border border-lightGray/20 px-4 py-3 text-sm text-lightGray rounded-lg mt-1 mb-4"
               />
               <label htmlFor="password" className="text-sm mt-4">

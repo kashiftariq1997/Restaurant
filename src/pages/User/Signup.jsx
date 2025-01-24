@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
-  const [err, setErr] = useState("This is err");
+  const [err, setErr] = useState("");
   const [tel, setTel] = useState("");
   const navigate = useNavigate();
 

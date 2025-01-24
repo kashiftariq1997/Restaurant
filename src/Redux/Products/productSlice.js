@@ -82,6 +82,21 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+export const updateDishOfTheDay = createAsyncThunk(
+  "products/updateDishOfTheDay",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.patch(
+        `${PRODUCT_API}/products/update/dishOfTheDay/${data.id}`,
+        { isDishOfTheDay: data.isDishOfTheDay }
+      );
+      return response.data.data; // Assuming `data` contains the updated product
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Error updating Dish of the Day");
+    }
+  }
+);
+
 // Slice
 const productSlice = createSlice({
   name: "products",
@@ -137,6 +152,19 @@ const productSlice = createSlice({
         );
       })
       .addCase(deleteProduct.rejected, (state, action) => {
+        state.error = action.payload;
+      });
+
+      builder
+      .addCase(updateDishOfTheDay.fulfilled, (state, action) => {
+        const index = state.products.findIndex(
+          (product) => product._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.products[index] = action.payload; // Update the product in the store
+        }
+      })
+      .addCase(updateDishOfTheDay.rejected, (state, action) => {
         state.error = action.payload;
       });
   },

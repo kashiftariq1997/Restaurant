@@ -83,21 +83,34 @@ const OrderTracking = () => {
                 {orders.slice(0, 2).map((order) => (
                   <div
                     key={order._id}
-                    className="flex justify-between items-center px-4 py-2 border-b last:border-none"
+                    className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-3 sm:px-4 py-3 border-b last:border-none gap-3 sm:gap-4"
                   >
-                    <div>
-                      <p className="text-sm text-gray-700">Order ID: {order._id}</p>
+                    {/* Order Details */}
+                    <div className="flex-1 min-w-0">
+                      <p
+                        className="text-sm text-gray-700 break-words max-w-full"
+                        style={{
+                          wordWrap: "break-word",
+                          overflowWrap: "break-word",
+                          whiteSpace: "normal", // Ensure text wraps properly
+                        }}
+                      >
+                        Order ID: {order._id}
+                      </p>
                       <p className="text-sm text-gray-500">Status: {order.status}</p>
                     </div>
+
+                    {/* View Status Button */}
                     <button
                       onClick={() => handleOrderStatusClick(order)}
-                      className="text-[#f253aa] hover:underline text-sm font-medium"
+                      className="text-[#f253aa] hover:underline text-sm font-medium flex-shrink-0"
                     >
                       Voir le statut
                     </button>
                   </div>
                 ))}
               </div>
+
               {orders.length > 2 && (
                 <button
                   onClick={handleShowAllOrdersClick}
@@ -108,6 +121,7 @@ const OrderTracking = () => {
               )}
             </div>
           )}
+
         </div>
       </main>
     </div>
